@@ -4,28 +4,34 @@
             <span class="uk-icon" uk-icon="icon: logo-color-dark; ratio: 0.7"></span>
         </p>
 
-        <form [formGroup]="form">
+        <app-loading *ngIf="busy">
+            
+        </app-loading>
+
+        <form [formGroup]="form" *ngIf="!busy">
             <div class="uk-card uk-card-primary uk-card-body uk-box-shadow-small">
                 <h3 class="uk-card-tittle">Autentique-se</h3>
                 <div class="uk-margin">
-                    <input class="uk-input uk-form-large" formControlName="cpf" maxlength="11" type="text" placeholder="CPF">
+                    <input class="uk-input uk-form-large" formControlName="cpf" maxlength="11" type="text" placeholder="CPF"
+                        [ngClass]="{'uk-form-danger': (!form.controls['cpf'].valid && !form.controls['cpf'].pristine)}"
+                    >
                 </div>
                 <div class="uk-margin">
                     <input class="uk-input uk-form-large" formControlName="password" type="password" placeholder="Senha">
                 </div>
                 <div class="uk-margin uk-text-center">
-                    <button class="uk-button uk-button-default" [disabled]="form.invalid" (click)="login()">Entrar</button>
+                    <button class="uk-button uk-button-default" [disabled]="form.invalid" (click)="submit()">Entrar</button>
                 </div>
             </div>
         </form>
 
-        <p class="uk-text-center">
+        <p class="uk-text-center" *ngIf="!busy">
             <a [routerLink]="['/singup']"
             class="uk-button uk-width-1-1 uk-button-large uk-button-primary uk-margin-small-bottom">
                 Quero Me Cadastrar
             </a>
             <br>
-            <a [routerLink]="['/reset-password']" class="uk-button uk-button-link">
+            <a [routerLink]="['/reset-password']" class="uk-button uk-button-link" *ngIf="!busy">
                 Esqueci Minha Senha
             </a>
         </p>

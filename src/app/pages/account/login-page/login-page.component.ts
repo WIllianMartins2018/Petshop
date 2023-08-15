@@ -10,7 +10,7 @@ import { DataService } from 'src/app/services/data.service';
 })
 export class LoginPageComponent implements OnInit {
   public form: FormGroup;
-  public isLogged$: Observable<boolean> | undefined; 
+  public busy = false;
 
   constructor(
     private service: DataService,
@@ -32,12 +32,28 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const token = localStorage.getItem('petshop.token');
 
+    if (token) {
+      this.busy = true;
+      this
+        .service
+        .refreshToken()
+        .subscribe({
+          next: (v: any) => { localStorage.setItem('petshop.token', v.token); this.busy = false},
+          error: (err) => { console.log(err); localStorage.clear(); this.busy = false }
+        })
+    }
   }
-  
-  login(): void {
-    this.isLogged$ = this.service.authenticate(this.form.value.cpf, this.form.value.password);
-    
+
+  submit(): void {
+    this
+      .service
+      .authenticate(this.form.value)
+      .subscribe({
+        next: (v: any) => { localStorage.setItem('petshop.token', v.token) },
+        error: (err) => console.log(err)
+      })
   }
 
 }
